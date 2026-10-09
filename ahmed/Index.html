@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> عبده ستور | الكتب الخارجية</title>
+<style>
+:root {
+  --green: #087f5b;
+  --dark: #12352b;
+  --light: #f3f8f5;
+  --yellow: #ffcf56;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, sans-serif;
+  background: #fff;
+  color: #20312a;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+header {
+  background: white;
+  padding: 15px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 12px #0000000c;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.logo { font-size: 23px; font-weight: bold; color: var(--green); }
+.logo span { color: var(--dark); }
+.search {
+  padding: 11px 15px;
+  border: 1px solid #dce5df;
+  border-radius: 12px;
+  width: min(320px, 100%);
+}
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 17px;
+  background: var(--green);
+  color: white;
+  font-weight: bold;
+}
+.btn:hover { filter: brightness(.92); }
+.hero {
+  padding: 55px 7%;
+  background: linear-gradient(120deg, #e5f6ed, #f8fbf6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+.hero h1 { font-size: clamp(30px, 5vw, 49px); margin: 0 0 15px; color: var(--dark); }
+.hero p { line-height: 1.9; color: #52665b; max-width: 520px; }
+.hero-art { font-size: 100px; text-align: center; }
+.hero-art small { display: block; font-size: 15px; color: var(--green); }
+section { padding: 35px 6%; }
+.section-title { font-size: 25px; margin: 0 0 22px; }
+.filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+.filters select {
+  padding: 11px; border: 1px solid #dce5df;
+  border-radius: 10px; background: white;
+}
+.products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.product {
+  border: 1px solid #e5ebe7;
+  border-radius: 16px;
+  padding: 13px;
+  transition: .2s;
+}
+.product:hover { transform: translateY(-3px); box-shadow: 0 8px 25px #0000000a; }
+.cover {
+  height: 180px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  background: linear-gradient(145deg, #087f5b, #164b3b);
+}
+.cover .book-icon { font-size: 40px; margin-bottom: 12px; }
+.cover b { font-size: 19px; line-height: 1.6; }
+.cover small { margin-top: 7px; }
+.product h3 { font-size: 16px; line-height: 1.7; min-height: 48px; }
+.muted { color: #748078; font-size: 13px; }
+.price { color: var(--green); font-weight: bold; font-size: 19px; margin: 12px 0; }
+.product .btn { width: 100%; }
+.empty { padding: 35px; text-align: center; color: #718078; }
+.cart-area { background: var(--light); }
+.cart-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 15px 0; border-bottom: 1px solid #dce8df;
+}
+.qty { display: flex; align-items: center; gap: 10px; }
+.qty button {
+  border: 0; background: white; border-radius: 7px;
+  padding: 5px 11px; font-size: 17px;
+}
+form {
+  max-width: 650px; background: white; padding: 22px;
+  border-radius: 16px; border: 1px solid #e4eae5;
+}
+form label { display: block; font-weight: bold; margin: 14px 0 7px; }
+form input, form textarea, form select {
+  width: 100%; padding: 12px; border-radius: 9px;
+  border: 1px solid #d8e2db; background: #fff;
+}
+form textarea { min-height: 90px; resize: vertical; }
+.total { font-size: 21px; font-weight: bold; margin: 20px 0; }
+.note { font-size: 13px; color: #697970; line-height: 1.8; }
+footer {
+  padding: 25px; text-align: center;
+  background: var(--dark); color: white; line-height: 2;
+}
+#toast {
+  position: fixed; bottom: 20px; left: 20px; right: 20px;
+  max-width: 450px; margin: auto; padding: 14px;
+  border-radius: 10px; background: var(--dark); color: white;
+  display: none; z-index: 10; text-align: center;
+}
+@media(max-width: 850px) {
+  .products { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero { padding: 35px 6%; }
+  .hero-art { font-size: 70px; }
+}
+@media(max-width: 520px) {
+  header { padding: 13px 4%; }
+  .logo { font-size: 19px; }
+  .hero-art { display: none; }
+  section { padding: 28px 4%; }
+  .cover { height: 150px; }
+  .cover b { font-size: 16px; }
+  .product { padding: 9px; }
+  .product h3 { font-size: 14px; }
+  .cart-row { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📚 مكتبة <span>عبده ستور</span></div>
+  <input class="search" id="search" placeholder="ابحث عن اسم الكتاب..." aria-label="ابحث عن كتاب">
+  <button class="btn" onclick="goToCart()">🛒 السلة (<span id="cartCount">0</span>)</button>
+</header>
+
+<main>
+  <div class="hero">
+    <div>
+      <h1>كل كتبك الخارجية في مكان واحد 📚</h1>
+      <p>اختار كتبك الدراسية بسهولة، أضفها للسلة، وسجّل طلبك في دقائق.</p>
+      <button class="btn" onclick="document.getElementById('books').scrollIntoView({behavior:'smooth'})">
+        تصفح الكتب ←
+      </button>
+    </div>
+    <div class="hero-art">📚✏️<small>رحلتك للتفوق تبدأ من هنا</small></div>
+  </div>
+
+  <section id="books">
+    <h2 class="section-title">📖 الكتب المتاحة</h2>
+    <div class="filters">
+      <select id="grade" aria-label="الصف الدراسي">
+        <option value="">كل الصفوف</option>
+        <option>الصف الأول الابتدائي</option>
+        <option>الصف السادس الابتدائي</option>
+        <option>الصف الأول الإعدادي</option>
+        <option>الصف الثالث الإعدادي</option>
+        <option>الصف الأول الثانوي</option>
+        <option>الصف الثالث الثانوي</option>
+      </select>
+      <select id="subject" aria-label="المادة">
+        <option value="">كل المواد</option>
+        <option>اللغة العربية</option>
+        <option>اللغة الإنجليزية</option>
+        <option>الرياضيات</option>
+        <option>العلوم</option>
+        <option>الدراسات الاجتماعية</option>
+      </select>
+    </div>
+    <div class="products" id="products"></div>
+  </section>
+
+  <section class="cart-area" id="cart">
+    <h2 class="section-title">🛒 سلة مشترياتك</h2>
+    <div id="cartItems"></div>
+    <div class="total">الإجمالي: <span id="total">0</span> جنيه</div>
+    <button class="btn" onclick="goToCheckout()">تأكيد الطلب ↓</button>
+  </section>
+
+  <section id="checkout">
+    <h2 class="section-title">📝 بيانات توصيل الطلب</h2>
+    <form id="orderForm">
+      <label for="customerName">الاسم بالكامل *</label>
+      <input id="customerName" required maxlength="100" placeholder="اكتب اسمك">
+
+      <label for="phone">رقم الموبايل *</label>
+      <input id="phone" type="tel" required maxlength="20"
+        placeholder="01xxxxxxxxx" pattern="[0-9+() -]{8,20}">
+
+      <label for="address">عنوان التوصيل بالتفصيل *</label>
+      <textarea id="address" required maxlength="500"
+        placeholder="المحافظة، المنطقة، الشارع، رقم العمارة"></textarea>
+
+      <label for="payment">طريقة الدفع</label>
+      <select id="payment">
+        <option>الدفع عند الاستلام</option>
+      </select>
+
+      <label for="notes">ملاحظات (اختياري)</label>
+      <textarea id="notes" maxlength="500" placeholder="أي تفاصيل إضافية"></textarea>
+
+      <p class="note">راجع الكتب والكميات والإجمالي قبل إرسال الطلب.</p>
+      <button class="btn" type="submit" style="width:100%;margin-top:15px">
+        إرسال الطلب عبر واتساب
+      </button>
+      <p class="note">سيتم فتح واتساب لإرسال الطلب إلى رقم المكتبة بعد ضبط الرقم في الكود.</p>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <strong>📚 مكتبة التفوق</strong><br>
+  كل كتبك الدراسية في مكان واحد<br>
+  <span id="year"></span>
+</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// عدّل رقم واتساب المكتبة هنا: كود الدولة + الرقم بدون علامة +
+// مثال مصر: 201012345678
+const WHATSAPP_NUMBER = "201140933156";
+
+// غيّر الكتب والأسعار والصفوف من هذه القائمة.
+// الصور هنا أغلفة تجريبية مرسومة بالـ CSS.
+const books = [
+  {id:1, title:"كتاب اللغة العربية", grade:"الصف السادس الابتدائي", subject:"اللغة العربية", price:180, color:"#087f5b"},
+  {id:2, title:"كتاب اللغة الإنجليزية", grade:"الصف السادس الابتدائي", subject:"اللغة الإنجليزية", price:165, color:"#3159a5"},
+  {id:3, title:"كتاب الرياضيات", grade:"الصف الأول الإعدادي", subject:"الرياضيات", price:190, color:"#b64a35"},
+  {id:4, title:"كتاب العلوم", grade:"الصف الأول الإعدادي", subject:"العلوم", price:155, color:"#7751a3"},
+  {id:5, title:"كتاب الدراسات الاجتماعية", grade:"الصف الثالث الإعدادي", subject:"الدراسات الاجتماعية", price:170, color:"#a66b22"},
+  {id:6, title:"كتاب اللغة العربية", grade:"الصف الثالث الثانوي", subject:"اللغة العربية", price:220, color:"#087f5b"},
+  {id:7, title:"كتاب الرياضيات", grade:"الصف الثالث الثانوي", subject:"الرياضيات", price:240, color:"#3159a5"},
+  {id:8, title:"كتاب اللغة الإنجليزية", grade:"الصف الأول الثانوي", subject:"اللغة الإنجليزية", price:175, color:"#a13d62"}
+];
+
+let cart = {};
+
+const money = n => n.toLocaleString("ar-EG");
+const el = id => document.getElementById(id);
+
+function notify(message) {
+  el("toast").textContent = message;
+  el("toast").style.display = "block";
+  setTimeout(() => el("toast").style.display = "none", 2800);
+}
+
+function renderBooks() {
+  const q = el("search").value.trim().toLowerCase();
+  const grade = el("grade").value;
+  const subject = el("subject").value;
+  const filtered = books.filter(b =>
+    (b.title.toLowerCase().includes(q) ||
+     b.grade.toLowerCase().includes(q) ||
+     b.subject.toLowerCase().includes(q)) &&
+    (!grade || b.grade === grade) &&
+    (!subject || b.subject === subject)
+  );
+
+  el("products").innerHTML = filtered.length ? filtered.map(b => `
+    <article class="product">
+      <div class="cover" style="background:linear-gradient(145deg,${b.color},#18392f)">
+        <div class="book-icon">📘</div>
+        <b>${b.title}</b>
+        <small>${b.grade}</small>
+      </div>
+      <h3>${b.title}</h3>
+      <div class="muted">${b.grade} · ${b.subject}</div>
+      <div class="price">${money(b.price)} جنيه</div>
+      <button class="btn" onclick="addToCart(${b.id})">أضف للسلة +</button>
+    </article>
+  `).join("") : '<div class="empty">مفيش كتب مطابقة للبحث.</div>';
+}
+
+function addToCart(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  renderCart();
+  notify("تمت إضافة الكتاب للسلة");
+}
+
+function changeQty(id, delta) {
+  cart[id] = (cart[id] || 0) + delta;
+  if (cart[id] <= 0) delete cart[id];
+  renderCart();
+}
+
+function getCartDetails() {
+  return books.filter(b => cart[b.id] > 0).map(b => ({
+    ...b, qty: cart[b.id], subtotal: b.price * cart[b.id]
+  }));
+}
+
+function renderCart() {
+  const items = getCartDetails();
+  const count = items.reduce((sum, b) => sum + b.qty, 0);
+  const total = items.reduce((sum, b) => sum + b.subtotal, 0);
+
+  el("cartCount").textContent = count;
+  el("total").textContent = money(total);
+
+  el("cartItems").innerHTML = items.length ? items.map(b => `
+    <div class="cart-row">
+      <div><strong>${b.title}</strong><br>
+      <span class="muted">${money(b.price)} جنيه للكتاب</span></div>
+      <div class="qty">
+        <button type="button" aria-label="زيادة الكمية"
+          onclick="changeQty(${b.id},1)">+</button>
+        <span>${b.qty}</span>
+        <button type="button" aria-label="تقليل الكمية"
+          onclick="changeQty(${b.id},-1)">−</button>
+      </div>
+      <strong>${money(b.subtotal)} جنيه</strong>
+    </div>
+  `).join("") : '<div class="empty">السلة فاضية. اختار الكتب اللي محتاجها الأول.</div>';
+}
+
+function goToCart() {
+  el("cart").scrollIntoView({behavior:"smooth"});
+}
+function goToCheckout() {
+  if (!getCartDetails().length) {
+    notify("أضف كتابًا للسلة الأول");
+    goToCart();
+    return;
+  }
+  el("checkout").scrollIntoView({behavior:"smooth"});
+}
+
+el("search").addEventListener("input", renderBooks);
+el("grade").addEventListener("change", renderBooks);
+el("subject").addEventListener("change", renderBooks);
+
+el("orderForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const items = getCartDetails();
+  if (!items.length) {
+    notify("السلة فاضية، أضف الكتب الأول");
+    goToCart();
+    return;
+  }
+
+  if (WHATSAPP_NUMBER === "201000000000") {
+    notify("لازم تحط رقم واتساب المكتبة الحقيقي في الكود");
+    return;
+  }
+
+  const name = el("customerName").value.trim();
+  const phone = el("phone").value.trim();
+  const address = el("address").value.trim();
+  const notes = el("notes").value.trim();
+  const total = items.reduce((sum, b) => sum + b.subtotal, 0);
+
+  const lines = [
+    "📚 *طلب جديد - مكتبة التفوق*",
+    "",
+    "👤 الاسم: " + name,
+    "📱 الموبايل: " + phone,
+    "📍 العنوان: " + address,
+    "",
+    "📦 الكتب المطلوبة:",
+    ...items.map(b => `• ${b.title} (${b.grade}) × ${b.qty} = ${b.subtotal} جنيه`),
+    "",
+    "💰 إجمالي الكتب: " + total + " جنيه",
+    "💳 الدفع: الدفع عند الاستلام",
+    notes ? "📝 ملاحظات: " + notes : ""
+  ].filter(Boolean);
+
+  const url = "https://wa.me/" + WHATSAPP_NUMBER +
+    "?text=" + encodeURIComponent(lines.join("\n"));
+
+  // يفتح واتساب برسالة مجهزة. العميل يحتاج الضغط على إرسال.
+  window.open(url, "_blank", "noopener,noreferrer");
+});
+
+el("year").textContent = "© " + new Date().getFullYear() + " عبده ستور";
+renderBooks();
+renderCart();
+</script>
+</body>
+</html>
